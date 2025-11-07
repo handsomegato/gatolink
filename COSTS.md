@@ -551,21 +551,19 @@ Break-even: ~143,000 tokens/month per GPU
 
 **Cost per Request at Different Scales:**
 
-```
-Scale Level    Requests/Day    Cost/Request    Monthly Cost
-─────────────────────────────────────────────────────────────
-Micro          1,000           $0.50          $15,000
-Small          10,000          $0.15          $45,000
-Medium         100,000         $0.05          $150,000
-Large          1,000,000       $0.02          $600,000
-Enterprise     10,000,000      $0.01          $3,000,000
+| Scale Level | Requests/Day | Cost/Request | Monthly Cost |
+|-------------|--------------|--------------|--------------|
+| Micro       | 1,000        | $0.50        | $15,000      |
+| Small       | 10,000       | $0.15        | $45,000      |
+| Medium      | 100,000      | $0.05        | $150,000     |
+| Large       | 1,000,000    | $0.02        | $600,000     |
+| Enterprise  | 10,000,000   | $0.01        | $3,000,000   |
 
 Cost Reduction Factors:
-├── Better GPU utilization: 40% → 85%
-├── Amortized overhead: Fixed costs spread
-├── Volume discounts: Hardware & software
-├── Operational efficiency: Automation
-```
+- Better GPU utilization: 40% → 85%
+- Amortized overhead: Fixed costs spread
+- Volume discounts: Hardware & software
+- Operational efficiency: Automation
 
 ## ROI Analysis
 
