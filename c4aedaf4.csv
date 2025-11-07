@@ -1,0 +1,32 @@
+Category,Tool,Purpose,Priority,Docker Available,License,Integration Notes
+Monitoring,Prometheus,Metrics collection,TIER 1,Yes,Apache-2.0,Essential for GPU/RAM/CPU tracking. Integrates with Grafana.
+Monitoring,Grafana,Visualization dashboards,TIER 1,Yes,AGPL-3.0,"Build custom dashboards for GPU utilization, API calls, revenue."
+Monitoring,Netdata,Real-time host metrics,TIER 1,Yes,GPL-3.0,Lightweight real-time monitoring. Minimal overhead.
+Proxy,Traefik,Reverse proxy + HTTPS,TIER 1,Yes,MIT,"Auto-discovers containers, handles HTTPS via Let's Encrypt."
+Proxy,Caddy,Reverse proxy + auto HTTPS,TIER 1,Yes,Apache-2.0,Simpler config than Traefik. Automatic HTTPS.
+Containers,Portainer,Container management UI,TIER 1,Yes,Zlib,Web UI for Docker. Essential for non-CLI management.
+AI/Inference,vLLM,LLM serving engine,TIER 2,Yes,Apache-2.0,High-throughput inference for Llama 3.1 70B. GPU-optimized.
+AI/Inference,Ollama,Local model runtime,TIER 2,Yes,MIT,"Run smaller models (Mistral, embeddings). Easy model switching."
+AI/Inference,TensorRT-LLM,NVIDIA inference optimization,TIER 2,Yes,Apache-2.0,Maximize RTX 6000 Ada performance. Quantization support.
+Database,Qdrant,Vector database,TIER 2,Yes,Apache-2.0,Store embeddings for RAG. Fast semantic search.
+Database,PostgreSQL,Relational DB,TIER 3,Yes,PostgreSQL,"User accounts, billing records, API logs."
+Database,Redis,Cache + state,TIER 3,Yes,BSD-3-Clause,"Session management, rate limiting, caching."
+Billing,Lago,Usage-based billing,TIER 3,Yes,AGPL-3.0,Track API tokens/GPU hours. Integrates with Stripe.
+Billing,Stripe,Payment processing,TIER 3,API,Commercial,Industry-standard payment gateway. Webhooks for automation.
+Auth,Authelia,SSO + 2FA,TIER 3,Yes,Apache-2.0,"Protect APIs and dashboards. Supports TOTP, WebAuthn."
+Auth,Authentik,Identity provider,TIER 3,Yes,MIT,"Alternative to Authelia. More features, heavier."
+Analytics,Umami,Privacy-first analytics,TIER 4,Yes,MIT,Track GatoLink dashboard usage. GDPR-compliant.
+Analytics,Plausible,Lightweight analytics,TIER 4,Yes,AGPL-3.0,"Alternative to Umami. Simple, no cookies."
+Monitoring,Healthchecks,Uptime monitoring,TIER 4,Yes,BSD-3-Clause,"Monitor cron jobs, inference endpoints. Alert on failures."
+Notifications,ntfy,Push notifications,TIER 4,Yes,Apache-2.0,Push alerts to phone/desktop. No external dependencies.
+Notifications,Gotify,Notification server,TIER 4,Yes,MIT,Alternative to ntfy. WebSocket-based.
+Automation,n8n,Workflow automation,TIER 4,Yes,Apache-2.0,"Automate client onboarding, invoice generation, alerts."
+Automation,Activepieces,No-code automation,TIER 4,Yes,MIT,Alternative to n8n. More user-friendly.
+API,Kong,API gateway,TIER 5,Yes,Apache-2.0,"Rate limiting, quotas, analytics. Enterprise-grade."
+API,Tyk,API gateway,TIER 5,Yes,MPL-2.0,Alternative to Kong. Lighter weight.
+Storage,MinIO,S3-compatible storage,TIER 5,Yes,AGPL-3.0,"Store model files, user uploads. S3 API compatible."
+Analytics,PostHog,Product analytics,TIER 5,Yes,MIT,"Feature flags, A/B testing, session replay."
+BI,Metabase,Business intelligence,TIER 5,Yes,AGPL-3.0,"Build revenue dashboards, query databases visually."
+UI,OpenWebUI,Chat interface,TIER 2,Yes,MIT,Web UI for inference testing. Supports multiple models.
+Orchestration,LangChain,AI agent framework,TIER 2,Python,MIT,Build complex AI workflows and agents.
+Orchestration,LlamaIndex,RAG framework,TIER 2,Python,MIT,Connect LLMs to your data sources.
