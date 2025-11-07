@@ -496,18 +496,16 @@ prometheus:
 
 **Use Open Source Alternatives:**
 ```
-Component           Paid Option         Cost        Open Source      Savings
-──────────────────────────────────────────────────────────────────────────────
-Auth                Auth0              $200/mo      Keycloak         $200/mo
-Monitoring          Datadog            $500/mo      Prometheus       $500/mo
-APM                 New Relic          $300/mo      Jaeger           $300/mo
-Database            AWS RDS            $500/mo      PostgreSQL       $300/mo
-Message Queue       AWS SQS            $100/mo      RabbitMQ         $100/mo
-──────────────────────────────────────────────────────────────────────────────
-Total Monthly Savings:                                              $1,400/mo
-Annual Savings:                                                    $16,800/yr
-```
-
+| Component       | Paid Option   | Cost     | Open Source | Savings   |
+|-----------------|--------------|----------|-------------|-----------|
+| Auth            | Auth0        | $200/mo  | Keycloak    | $200/mo   |
+| Monitoring      | Datadog      | $500/mo  | Prometheus  | $500/mo   |
+| APM             | New Relic    | $300/mo  | Jaeger      | $300/mo   |
+| Database        | AWS RDS      | $500/mo  | PostgreSQL  | $300/mo   |
+| Message Queue   | AWS SQS      | $100/mo  | RabbitMQ    | $100/mo   |
+|                 |              |          |             |           |
+| **Total Monthly Savings:** |              |          |             | **$1,400/mo** |
+| **Annual Savings:**        |              |          |             | **$16,800/yr** |
 ## Scaling Economics
 
 ### Unit Economics
