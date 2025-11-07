@@ -60,28 +60,31 @@ mkdir ai-platform && cd ai-platform
 
 # Create environment file
 cat > .env << 'EOF'
+# WARNING: All placeholder values below MUST be replaced with strong, unique secrets before deployment!
+# Never use these example values in production.
+
 # Database
 POSTGRES_DB=aiplatform
 POSTGRES_USER=admin
-POSTGRES_PASSWORD=changeme_secure_password
+POSTGRES_PASSWORD=REPLACE_WITH_SECURE_PASSWORD
 
 # Redis
-REDIS_PASSWORD=changeme_redis_password
+REDIS_PASSWORD=REPLACE_WITH_SECURE_PASSWORD
 
 # MinIO
 MINIO_ROOT_USER=admin
-MINIO_ROOT_PASSWORD=changeme_minio_password
+MINIO_ROOT_PASSWORD=REPLACE_WITH_SECURE_PASSWORD
 
 # Keycloak
 KEYCLOAK_ADMIN=admin
-KEYCLOAK_ADMIN_PASSWORD=changeme_keycloak_password
+KEYCLOAK_ADMIN_PASSWORD=REPLACE_WITH_SECURE_PASSWORD
 
 # Application
-JWT_SECRET=changeme_jwt_secret_key
-API_KEY_SALT=changeme_api_key_salt
+JWT_SECRET=REPLACE_WITH_SECURE_SECRET_KEY
+API_KEY_SALT=REPLACE_WITH_SECURE_SALT
 
 # Billing (optional)
-STRIPE_API_KEY=sk_test_your_stripe_key
+STRIPE_API_KEY=REPLACE_WITH_YOUR_STRIPE_KEY
 EOF
 
 # Secure the environment file
