@@ -62,7 +62,7 @@ Hardware Components:
                                     ───────────────
 Total Initial Investment:                   $28,400
 
-Monthly Amortization (3 years):              $788
+Monthly Amortization (3 years):              $788.89
 ```
 
 **Medium Deployment (4-6 GPU nodes)**
