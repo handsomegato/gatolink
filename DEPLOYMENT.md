@@ -129,7 +129,7 @@ services:
       - "6379:6379"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "--raw", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
