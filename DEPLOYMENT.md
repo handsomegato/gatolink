@@ -631,7 +631,9 @@ kubectl apply -f vllm-deployment.yaml
 
 ```bash
 # Install cert-manager for TLS certificates
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
+# IMPORTANT: Check for the latest stable version at https://github.com/cert-manager/cert-manager/releases
+# Example (replace <latest-version> with the current release, e.g. v1.14.4):
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/<latest-version>/cert-manager.yaml
 
 # Create ingress with TLS
 cat > ingress.yaml << 'EOF'
