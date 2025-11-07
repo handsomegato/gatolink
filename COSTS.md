@@ -38,6 +38,55 @@ The TCO for a self-hosted AI platform includes:
 
 *Note: Costs vary based on usage, region, and specific requirements*
 
+### Detailed Service Cost Breakdown (Annual)
+
+The following table provides a detailed comparison of self-hosted vs. SaaS costs for individual services:
+
+| Service | Self-Hosted (Annual) | SaaS Equivalent (Annual) | Annual Savings |
+|---------|---------------------|-------------------------|----------------|
+| **Billing & Payments** | $0 | Stripe Billing: 0.5% revenue (~$5K for $1M revenue) | $5,000 |
+| **Analytics** | $0 | PostHog Cloud: $2,000/year | $2,000 |
+| **Monitoring** | $0 | Datadog: $3,000/year | $3,000 |
+| **LLM Inference** | $0 (own GPU) | OpenAI API: $50,000/year | $50,000 |
+| **Vector Database** | $0 | Pinecone: $3,000/year | $3,000 |
+| **API Gateway** | $0 | Kong Enterprise: $5,000/year | $5,000 |
+| **Container Management** | $0 | Docker Enterprise: $2,000/year | $2,000 |
+| **Authentication** | $0 | Auth0: $2,500/year | $2,500 |
+| **Workflow Automation** | $0 | Zapier: $1,500/year | $1,500 |
+| **Business Intelligence** | $0 | Looker: $3,000/year | $3,000 |
+| **Hosting & Bandwidth** | ~$200 | N/A | -$200 |
+| **Total Annual Cost** | **~$200** | **~$77,000** | **~$76,800** |
+
+**Key Insights:**
+- Self-hosted infrastructure reduces annual software costs by **99.7%**
+- Does not include hardware amortization (see infrastructure costs below)
+- Assumes ownership of GPU hardware for inference workloads
+- Most self-hosted tools are open-source with no licensing fees
+- Main ongoing costs are hosting (VPS/bandwidth) and electricity
+
+### Real-World Deployment Scenarios
+
+**Scenario 1: AI Startup (Small Scale)**
+- Monthly API calls: 10M tokens
+- Users: 100-500
+- Self-hosted: $1,475/month (including hardware amortization)
+- SaaS equivalent: $3,800+/month
+- **Savings: 61% ($2,325/month)**
+
+**Scenario 2: Growing SaaS Company (Medium Scale)**
+- Monthly API calls: 100M tokens  
+- Users: 1,000-5,000
+- Self-hosted: $4,991/month
+- SaaS equivalent: $19,900+/month
+- **Savings: 75% ($14,909/month)**
+
+**Scenario 3: Enterprise Deployment (Large Scale)**
+- Monthly API calls: 1B+ tokens
+- Users: 10,000+
+- Self-hosted: $25,000/month
+- SaaS equivalent: $100,000+/month  
+- **Savings: 75% ($75,000/month)**
+
 ## Infrastructure Costs
 
 ### On-Premise / Bare Metal
