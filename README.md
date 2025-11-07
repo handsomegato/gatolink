@@ -173,17 +173,6 @@ Before deploying to production, ensure:
 - [ ] Monitor logs with Grafana Loki
 - [ ] Enable audit logging for all administrative actions
 
-## 🔗 Related Resources
-
-- [vLLM Documentation](https://docs.vllm.ai/)
-- [Kubernetes Documentation](https://kubernetes.io/docs/)
-- [Prometheus Documentation](https://prometheus.io/docs/)
-- [Keycloak Documentation](https://www.keycloak.org/documentation)
-- [Qdrant Documentation](https://qdrant.tech/documentation/)
-- [Lago Documentation](https://docs.getlago.com/)
-- [LangChain Documentation](https://python.langchain.com/)
-- [Traefik Documentation](https://doc.traefik.io/traefik/)
-
 ---
 
 **Note**: This platform architecture is designed to be flexible and adaptable. Customize components based on your specific requirements, scale, and constraints.
