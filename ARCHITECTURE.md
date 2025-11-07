@@ -403,20 +403,101 @@ autoscaling:
    - Inference input validation
    - Output filtering for sensitive data
 
+## Extended Component Catalog
+
+Beyond the core components, the following tools enhance functionality and operational excellence:
+
+### Container Management
+- **Portainer** (Zlib License): Web UI for Docker management. Essential for visual container oversight and non-CLI operations.
+- **Watchtower**: Automated container updates with rollback capabilities.
+
+### Vector Databases
+- **Qdrant** (Apache-2.0): High-performance vector search engine for RAG applications. Supports 10M+ vectors with <10ms query latency.
+- **Milvus**: Alternative with advanced features for larger scale deployments.
+- **Weaviate**: GraphQL-based vector database with built-in ML capabilities.
+
+### AI Frameworks & Orchestration
+- **LangChain**: Python library for building AI workflows, chains, and agents. Integrates seamlessly with vLLM and Qdrant.
+- **LlamaIndex**: Data connectors and indexing for RAG. Auto-creates vector collections from documents, PDFs, and databases.
+- **OpenWebUI**: Chat interface for testing and demonstrating LLM capabilities. Supports multiple models.
+
+### Billing & Monetization
+- **Lago** (AGPL-3.0): Open-source usage-based billing platform. Tracks API tokens, GPU hours, and generates invoices. Integrates with Stripe.
+- **Kill Bill**: Advanced subscription and billing management.
+
+### Enhanced Monitoring
+- **Netdata** (GPL-3.0): Real-time per-second metrics with minimal overhead. Auto-discovers containers.
+- **Healthchecks** (BSD-3-Clause): Uptime monitoring for cron jobs, inference endpoints, and scheduled tasks.
+- **Loki**: Log aggregation system designed to work with Grafana.
+- **Jaeger**: Distributed tracing for microservices debugging.
+
+### Proxy & Load Balancing
+- **Traefik** (MIT): Auto-discovery of Docker containers, automatic HTTPS via Let's Encrypt, advanced routing.
+- **Caddy** (Apache-2.0): Simpler configuration than Traefik with automatic HTTPS.
+- **HAProxy**: High-performance TCP/HTTP load balancer for production workloads.
+
+### Notifications & Alerts
+- **ntfy** (Apache-2.0): Push notifications to phone/desktop without external dependencies.
+- **Gotify** (MIT): Alternative notification server with WebSocket support.
+- **Alertmanager**: Prometheus-native alert routing and grouping.
+
+### Automation & Workflows
+- **n8n** (Apache-2.0): Workflow automation for client onboarding, invoice generation, and alerting.
+- **Activepieces** (MIT): No-code automation alternative to n8n, more user-friendly.
+- **Apache Airflow**: Complex workflow orchestration and data pipelines.
+
+### Analytics & Business Intelligence
+- **Umami** (MIT): Privacy-first web analytics, GDPR-compliant.
+- **Plausible** (AGPL-3.0): Lightweight analytics without cookies.
+- **PostHog** (MIT): Product analytics with feature flags, A/B testing, and session replay.
+- **Metabase** (AGPL-3.0): Business intelligence and data visualization. Query databases visually.
+
+### Security & Authentication
+- **Authelia** (Apache-2.0): Single sign-on with 2FA support (TOTP, WebAuthn). Protects APIs and dashboards.
+- **Authentik** (MIT): Identity provider with more features than Authelia.
+- **Fail2Ban**: Brute-force protection for SSH and web services.
+- **CrowdSec**: Collaborative intrusion prevention system.
+
+### Backup & Storage
+- **Restic**: Encrypted, incremental backups to cloud or local storage.
+- **Duplicati**: Backup solution with web UI.
+- **Velero**: Kubernetes-native backup and disaster recovery.
+
+### API Management (Advanced)
+- **Kong** (Apache-2.0): Enterprise-grade API gateway with rate limiting, quotas, and analytics. Used by Netflix and NASA.
+- **Tyk** (MPL-2.0): Lighter-weight alternative to Kong.
+- **KrakenD**: High-performance API gateway with OpenAPI support.
+
 ## Technology Stack Summary
 
-| Component | Primary Option | Alternative |
-|-----------|---------------|-------------|
-| Inference | vLLM | Ollama, TGI, Ray Serve |
-| Database | PostgreSQL | MySQL, CockroachDB |
-| Object Storage | MinIO | Ceph, SeaweedFS |
-| Cache | Redis | Memcached, KeyDB |
-| Auth | Keycloak | Authelia, Ory |
-| Monitoring | Prometheus + Grafana | Netdata, VictoriaMetrics |
-| Orchestration | Kubernetes | Docker Swarm, Nomad |
-| Load Balancer | Nginx | Traefik, HAProxy |
-| API Gateway | Kong | KrakenD, Tyk |
-| Message Queue | RabbitMQ | Kafka, NATS |
+### Core Stack
+| Component | Primary Option | Alternative | License |
+|-----------|---------------|-------------|---------|
+| Inference | vLLM | Ollama, TGI, Ray Serve | Apache-2.0 |
+| Vector DB | Qdrant | Milvus, Weaviate | Apache-2.0 |
+| Database | PostgreSQL | MySQL, CockroachDB | PostgreSQL |
+| Object Storage | MinIO | Ceph, SeaweedFS | AGPL-3.0 |
+| Cache | Redis | Memcached, KeyDB | BSD-3-Clause |
+| Auth | Keycloak | Authelia, Authentik | Apache-2.0 |
+| Monitoring | Prometheus + Grafana | Netdata, VictoriaMetrics | Apache-2.0 |
+| Orchestration | Kubernetes | Docker Swarm, Nomad | Apache-2.0 |
+| Load Balancer | Nginx | Traefik, Caddy | BSD-2-Clause |
+| API Gateway | Kong | KrakenD, Tyk | Apache-2.0 |
+| Message Queue | RabbitMQ | Kafka, NATS | MPL-2.0 |
+
+### Enhanced Stack (Production Features)
+| Component | Tool | Purpose | License |
+|-----------|------|---------|---------|
+| Container UI | Portainer | Visual Docker management | Zlib |
+| Billing | Lago | Usage-based billing & metering | AGPL-3.0 |
+| AI Chat UI | OpenWebUI | Testing interface for models | MIT |
+| Real-time Monitoring | Netdata | Per-second metrics | GPL-3.0 |
+| Uptime Checks | Healthchecks | Endpoint monitoring | BSD-3-Clause |
+| Notifications | ntfy | Push alerts | Apache-2.0 |
+| Automation | n8n | Workflow automation | Apache-2.0 |
+| Analytics | Umami | Privacy-first web analytics | MIT |
+| Business Intelligence | Metabase | Data visualization | AGPL-3.0 |
+| Backups | Restic | Encrypted incremental backups | BSD-2-Clause |
 
 ## Next Steps
 

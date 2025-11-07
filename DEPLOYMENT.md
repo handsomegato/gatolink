@@ -957,6 +957,357 @@ docker-compose exec postgres psql -U admin -d aiplatform -c "SELECT COUNT(*) FRO
 kubectl exec -n ai-platform $POSTGRES_POD -- psql -U admin -d aiplatform -c "SELECT * FROM inference_requests ORDER BY timestamp DESC LIMIT 10;"
 ```
 
+## Advanced: Modular Docker Compose Architecture
+
+For complex deployments, organize your stack into separate compose files for better modularity and easier management.
+
+### Directory Structure
+
+```
+gatolink-infra/
+├── .env                              # Environment variables
+├── docker-compose.core.yml           # Portainer, Traefik, Prometheus, Grafana
+├── docker-compose.inference.yml      # vLLM, Ollama, Qdrant
+├── docker-compose.data.yml           # PostgreSQL, Redis
+├── docker-compose.billing.yml        # Lago API, Lago Front
+├── docker-compose.monitoring.yml     # Netdata, Healthchecks
+├── docker-compose.frontend.yml       # OpenWebUI, Analytics
+└── docker-compose.automation.yml     # n8n, backup jobs
+```
+
+### Core Infrastructure (`docker-compose.core.yml`)
+
+```yaml
+version: '3.8'
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: gato-portainer
+    restart: unless-stopped
+    ports:
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    command: -H unix:///var/run/docker.sock
+
+  traefik:
+    image: traefik:v2.10
+    container_name: gato-traefik
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./acme.json:/acme.json
+      - traefik_logs:/var/log/traefik
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: gato-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: gato-grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+
+volumes:
+  portainer_data:
+  traefik_logs:
+  prometheus_data:
+  grafana_data:
+```
+
+### Inference Services (`docker-compose.inference.yml`)
+
+```yaml
+version: '3.8'
+
+services:
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: gato-vllm-llama70b
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    shm_size: '16gb'
+    command: >
+      --model meta-llama/Meta-Llama-3.1-70B-Instruct
+      --tensor-parallel-size 1
+      --max-model-len 8192
+      --gpu-memory-utilization 0.90
+      --served-model-name llama-70b
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: gato-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: gato-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"  # REST API
+      - "6334:6334"  # gRPC API
+    volumes:
+      - qdrant_data:/qdrant/storage
+      - qdrant_config:/qdrant/config
+    environment:
+      - QDRANT__SERVICE__API_KEY=${QDRANT_API_KEY}
+      - QDRANT__LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  ollama_data:
+  qdrant_data:
+  qdrant_config:
+```
+
+### Data Layer (`docker-compose.data.yml`)
+
+```yaml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: gato-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-gatolink}
+      POSTGRES_USER: ${POSTGRES_USER:-gato}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gato}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: gato-redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+
+volumes:
+  postgres_data:
+  redis_data:
+```
+
+### Billing Services (`docker-compose.billing.yml`)
+
+```yaml
+version: '3.8'
+
+services:
+  lago-api:
+    image: getlago/api:latest
+    container_name: lago-api
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-gato}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-gatolink}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      LAGO_API_KEY: ${LAGO_API_KEY}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      LAGO_FRONT_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    volumes:
+      - lago_storage:/app/storage
+
+  lago-front:
+    image: getlago/front:latest
+    container_name: lago-front
+    restart: unless-stopped
+    depends_on:
+      - lago-api
+    environment:
+      LAGO_API_URL: http://lago-api:3000
+    ports:
+      - "8080:80"
+
+volumes:
+  lago_storage:
+
+networks:
+  default:
+    external: true
+    name: gatolink_network
+```
+
+### Monitoring Services (`docker-compose.monitoring.yml`)
+
+```yaml
+version: '3.8'
+
+services:
+  netdata:
+    image: netdata/netdata:latest
+    container_name: gato-netdata
+    restart: unless-stopped
+    ports:
+      - "19999:19999"
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  healthchecks:
+    image: linuxserver/healthchecks:latest
+    container_name: gato-healthchecks
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    environment:
+      - SITE_ROOT=http://localhost:8001
+      - SECRET_KEY=${HEALTHCHECKS_SECRET}
+    volumes:
+      - healthchecks_data:/config
+
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    container_name: gato-ntfy
+    restart: unless-stopped
+    ports:
+      - "8002:80"
+    volumes:
+      - ntfy_data:/var/cache/ntfy
+      - ntfy_config:/etc/ntfy
+    command: serve
+
+volumes:
+  healthchecks_data:
+  ntfy_data:
+  ntfy_config:
+```
+
+### Staged Deployment
+
+Deploy in the following order:
+
+```bash
+# 1. Create shared network
+docker network create gatolink_network
+
+# 2. Deploy data layer first
+docker-compose -f docker-compose.data.yml up -d
+
+# 3. Deploy core infrastructure
+docker-compose -f docker-compose.core.yml up -d
+
+# 4. Deploy inference services
+docker-compose -f docker-compose.inference.yml up -d
+
+# 5. Deploy billing (optional)
+docker-compose -f docker-compose.billing.yml up -d
+
+# 6. Deploy monitoring
+docker-compose -f docker-compose.monitoring.yml up -d
+
+# Check all services
+docker ps -a
+
+# Stop all services
+docker-compose -f docker-compose.monitoring.yml down
+docker-compose -f docker-compose.billing.yml down
+docker-compose -f docker-compose.inference.yml down
+docker-compose -f docker-compose.core.yml down
+docker-compose -f docker-compose.data.yml down
+```
+
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```bash
+# Database
+POSTGRES_DB=gatolink
+POSTGRES_USER=gato
+POSTGRES_PASSWORD=your_secure_postgres_password
+
+# Redis
+REDIS_PASSWORD=your_secure_redis_password
+
+# Hugging Face
+HF_TOKEN=your_huggingface_token
+
+# Qdrant
+QDRANT_API_KEY=$(openssl rand -hex 32)
+
+# Lago Billing
+LAGO_API_KEY=your_lago_api_key
+SECRET_KEY_BASE=$(openssl rand -hex 64)
+
+# Grafana
+GRAFANA_PASSWORD=your_secure_grafana_password
+
+# Healthchecks
+HEALTHCHECKS_SECRET=$(openssl rand -hex 32)
+```
+
 ## Next Steps
 
 1. Review the [Architecture Document](ARCHITECTURE.md) for system design details

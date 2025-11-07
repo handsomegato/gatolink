@@ -1,0 +1,37 @@
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+dist/
+build/
+*.pyc
+__pycache__/
+node_modules/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.code-workspace
+.DS_Store
+
+# Docker volumes and data
+docker-compose.override.yml
+volumes/
+data/
+
+# Logs
+*.log
+logs/
+
+# Backup files
+*.bak
+*.backup
